@@ -40,33 +40,34 @@ module FindGrep
                         :matchCountLimit,
                         :keywords,
                         :gotoline)
-    
-    DEFAULT_OPTION = Option.new([],
-                                [],
-                                ".",
-                                -1,
-                                false,
-                                false,
-                                false,
-                                false,
-                                false,
-                                [],
-                                [],
-                                [],
-                                [],
-                                [],
-                                [],
-                                # Platform.get_shell_kcode,
-                                Kconv::UTF8,
-                                false,
-                                nil,
-                                false,
-                                false,
-                                false,
-                                -1,
-                                [],
-                                -1)
-    
+
+    def self.create_default_option
+      Option.new([],
+                 [],
+                 ".",
+                 -1,
+                 false,
+                 false,
+                 false,
+                 false,
+                 false,
+                 [],
+                 [],
+                 [],
+                 [],
+                 [],
+                 [],
+                 Kconv::UTF8, # Platform.get_shell_kcode,
+                 false,
+                 nil,
+                 false,
+                 false,
+                 false,
+                 -1,
+                 [],
+                 -1)
+    end
+
     class MatchCountOverError < RuntimeError ; end
 
     attr_reader :documents
@@ -92,7 +93,7 @@ module FindGrep
       # データベース開く
       if dbfile.exist?
         if !@grndb || @grndb.closed?
-          @grndb = GroongaDatabase.new
+          @grndb = Milkode::GroongaDatabase.new
           @grndb.open_file(dbfile.to_s)
           @documents = @grndb.documents
           puts "open    : #{dbfile.to_s} open." unless @option.isSilent

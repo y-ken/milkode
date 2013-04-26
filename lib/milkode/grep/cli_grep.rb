@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-require 'optparse'
-require 'milkode/findgrep/findgrep'
-require 'milkode/common/dbdir'
-require 'milkode/cdstk/cdstk'
-require 'milkode/cdstk/yaml_file_wrapper'
-require 'milkode/cdstk/package'
 require 'kconv'
+require 'milkode/cdstk/package'
+require 'milkode/cdstk/yaml_file_wrapper'
+require 'milkode/common/dbdir'
+require 'milkode/common/util'
+require 'milkode/findgrep/findgrep'
+require 'optparse'
 
 module Milkode
   class CLI_Grep
@@ -16,7 +16,7 @@ module Milkode
         arguments = arguments.map{|arg| Kconv.kconv(arg, Kconv::UTF8)}
       end
 
-      option = FindGrep::FindGrep::DEFAULT_OPTION.dup
+      option = FindGrep::FindGrep::create_default_option
 
       # default option
       option.dbFile = Dbdir.groonga_path(Dbdir.default_dir)
@@ -124,6 +124,7 @@ EOF
       if (arguments.size > 0 || my_option[:find_mode])
         # update
         if my_option[:update]
+          require 'milkode/cdstk/cdstk'
           cdstk = Cdstk.new(stdout, Dbdir.select_dbdir)
 
           if (my_option[:all])
