@@ -85,6 +85,10 @@ post '/command' do
       result = Database.instance.update(params[:name])
       update_result_str(result, before)
     end
+  when 'favorite'
+    Database.instance.set_fav(params[:name], params[:favorited] == 'true')
+    @package_list = PackageList.new(Database.instance.grndb)
+    "お気に入り: " + @package_list.favorite_list({})
   end
 end
 
@@ -308,6 +312,17 @@ EOF
     r << "#{result.add_count} add"
     r << "#{result.update_count} update"
     "#{r.join(', ')} (#{Time.now - before} sec)"
+  end
+
+  def favstar(path)
+    pname   = package_name(path)
+
+    if pname != "root"
+      classes = Database.instance.fav?(pname) ? "star favorited" : "star"
+      "<a href=\"javascript:\" class=\"#{classes}\" milkode-package-name=\"#{pname}\">Favorite Me</a>"
+    else
+      ""
+    end
   end
 
   # .search-summary に追加情報を表示したい時はこの関数をオーバーライド

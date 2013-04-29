@@ -178,6 +178,15 @@ module Milkode
       @grndb.packages.touch_if(package, :viewtime) if package
     end
 
+    def fav?(name)
+      @grndb.packages.fav?(name)
+    end
+
+    def set_fav(name, favorited)
+      time = favorited ? Time.now : Time.at(0)
+      @grndb.packages.touch_if(name, :favtime, time)
+    end
+
     def update(name)
       result = Updater::ResultAccumulator.new
       result << update_in(yaml_load.find_name(name))
